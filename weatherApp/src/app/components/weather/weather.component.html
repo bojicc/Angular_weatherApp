@@ -1,47 +1,79 @@
-<mat-card appearance="outlined" class="m-5 p-5" style="border-radius: 20px">
+<div class="container">
+  <mat-card appearance="outlined" class="m-5 p-5" style="border-radius: 20px;">
     <div class="text-center">
-      <h1 class="mb-4 fw-bold fs-2">
-        Weather App
-        <span
-          ><img
-            src="../../../assets/icons/weatherIcon.webp"
-            alt="Weather App"
-            style="width: 100px; height: 100px"
-        /></span>
-      </h1>
-      <input
-        class="p-2 me-2"
-        style="border-radius: 5px; border: 1px solid gray; width: 250px"
-        type="text"
-        [(ngModel)]="city"
-        placeholder="Enter city name"
-      />
-      <button
-        class="p-2"
-        style="border-radius: 5px"
-        class="btn btn-primary"
-        (click)="getWeather()"
-      >
-        Get Weather
-      </button>
-      <div *ngIf="errorMessage" class="text-danger">
-        {{ errorMessage }}
-      </div>
-    </div>
+      <h1 class="mb-4 fw-bold fs-2">Weather App <span><img src="../../../assets/icons/weatherIcon.webp" alt="Weather App" style="width: 100px; height: 100px"></span></h1>
     <mat-card-content>
-      <div
-        class="mt-5 p-3"
-        style="border: 1px solid grey; border-radius: 10px; width: 33%"
-        *ngIf="weather"
-      >
-        <h2 class="fw-bold">{{ weather.name }}</h2>
-        <img
-          [src]="getWeatherIconUrl(weather.weather[0].icon)"
-          alt="Weather icon"
-        />
-        <p>Temperature: {{ weather.main.temp }} °C</p>
-        <p>Weather: {{ weather.weather[0].description }}</p>
-        <p>Feels Like: {{ weather.main.feels_like }}</p>
-      </div>
+
+      <input class="p-2 me-2" style="border-radius: 5px; border: 1px solid gray; width: 250px" type="text" [(ngModel)]="city" placeholder="Enter city name"/>
+      <button class="p-2" style="border-radius: 5px" class="btn btn-primary" (click)="getWeather()">Get Weather</button>
+
+      <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+    </mat-card-content>
+  </div>
+  </mat-card>
+
+  <div class="d-flex justify-content-between">
+      <mat-card appearance="outlined" *ngIf="weather" class="weather-card px-3" style="border-radius: 20px;" >
+        <mat-card-header>
+          <mat-card-title class="mt-2">{{ weather.name }}</mat-card-title>
+          <img [src]="getWeatherIconUrl(weather.weather[0].icon)" alt="Weather icon"/>
+        </mat-card-header>
+        <hr>
+        <mat-card-content>
+          <p>Temperature: {{ weather.main.temp }} °C</p>
+          <p>Weather: {{ weather.weather[0].description }}</p>
+          <p>Visibility: {{ weather.visibility / 1000 }} km</p>
+          <p>Pressure: {{ pressure }} hPa</p>
+          <p>Sunrise: {{ sunrise }}</p>
+          <p>Sunset: {{ sunset }}</p>
+        </mat-card-content>
+      </mat-card>
+    
+    <mat-card appearance="outlined" *ngIf="forecast.length" class="forecast-card px-3 mx-3" style="border-radius: 20px;">
+      <mat-card-header>
+        <mat-card-title class="mt-2">5-Day Forecast for {{ weather.name }}</mat-card-title>
+      </mat-card-header>
+      <hr class="mt-4">
+      <mat-card-content>
+        <div class="forecast-item" *ngFor="let item of forecast">
+          <img [src]="getWeatherIconUrl(item.weather[0].icon)" alt="Forecast icon" />
+          <p>{{ item.dt_txt | date: 'shortDate' }}: {{ item.main.temp }} °C</p>
+          <p>Min Temperature: {{ item.main.temp_min }} °C</p>
+          <p>Max Temperature: {{ item.main.temp_max }} °C</p>
+          <p>Humidity: {{ item.main.humidity }}%</p>
+          <p>Wind Speed: {{ item.wind.speed }} m/s</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+   
+
+    <mat-card appearance="outlined" *ngIf="hourlyForecast.length" class="hourly-forecast-card px-3 mx-3" style="border-radius: 20px;">
+      <mat-card-header>
+        <mat-card-title class="mt-2">Hourly Forecast</mat-card-title>
+      </mat-card-header>
+      <hr class="mt-4">
+      <mat-card-content>
+        <div class="hourly-forecast-item" *ngFor="let item of hourlyForecast">
+          <img [src]="getWeatherIconUrl(item.weather[0].icon)" alt="Hourly forecast icon" />
+          <p>{{ item.dt_txt | date: 'shortTime' }}: {{ item.main.temp }} °C</p>
+          <p>Weather: {{ item.weather[0].description }}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-card appearance="outlined" *ngIf="airPollutionData" class="air-pollution-card px-3 mx-3" style="border-radius: 20px;">
+    <mat-card-header>
+      <mat-card-title class="mt-2">Air Pollution Data</mat-card-title>
+    </mat-card-header>
+    <hr class="mt-4">
+    <mat-card-content>
+      <p>CO: {{ airPollutionData.list[0].components.co }} μg/m³</p>
+      <p>NO: {{ airPollutionData.list[0].components.no }} μg/m³</p>
+      <p>NO2: {{ airPollutionData.list[0].components.no2 }} μg/m³</p>
+      <p>O3: {{ airPollutionData.list[0].components.o3 }} μg/m³</p>
+      <p>SO2: {{ airPollutionData.list[0].components.so2 }} μg/m³</p>
+      <p>PM2.5: {{ airPollutionData.list[0].components.pm2_5 }} μg/m³</p>
+      <p>PM10: {{ airPollutionData.list[0].components.pm10 }} μg/m³</p>
     </mat-card-content>
   </mat-card>
