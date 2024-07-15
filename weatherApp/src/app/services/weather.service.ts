@@ -36,4 +36,8 @@ export class WeatherService {
     const url = `${this.airPollutionUrl}&lat=${latitude}&lon=${longitude}`;
     return this.http.get<any>(url);
   }
+
+  getGeocoding(city: string): Observable<any> {
+    return this.http.get<any>(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${this.apiKey}`);
+  }
 }

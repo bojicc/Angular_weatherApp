@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { WeatherService } from '../../services/weather.service';
-import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-weather',
@@ -14,7 +13,8 @@ export class WeatherComponent {
   hourlyForecast: any[] = [];
   errorMessage: string = '';
   airQualityData: any;
-  airPollutionData: any; // Dodato za prikaz podataka o zagađenju vazduha
+  airPollutionData: any; 
+  geocodingData: any;
 
   minTemp: number | undefined;
   maxTemp: number | undefined;
@@ -29,8 +29,6 @@ export class WeatherComponent {
   endCity: string = '';
   roadRiskData: any;
 
-  private airQualityChartCreated: boolean = false;
-
   constructor(private weatherService: WeatherService) {}
 
   getWeather() {
@@ -42,6 +40,7 @@ export class WeatherComponent {
         this.extractStatistics(this.weather);
         this.getHourlyForecast();
         this.getAirPollutionDataForCity(); 
+        this.getGeocoding();
 
         this.city = '';
         console.log(this.weather);
@@ -104,6 +103,18 @@ export class WeatherComponent {
       },
       error => {
         console.error('Error fetching weather data:', error);
+      }
+    );
+  }
+
+  getGeocoding() {
+    this.weatherService.getGeocoding(this.city).subscribe(
+      data => {
+        this.geocodingData = data;
+        console.log('Geocoding data:', this.geocodingData);
+      },
+      error => {
+        console.error('Error fetching geocoding data:', error);
       }
     );
   }
